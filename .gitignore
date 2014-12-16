@@ -1,0 +1,3 @@
+# auto generated gitignore file for sourcemod environment
+spcomp
+addons/sourcemod/scripting/include/*
