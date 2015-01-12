@@ -7,12 +7,14 @@
 #define PLUGIN_NAME "Karma System REDUX"
 #define AUTHOR "Yusuf Ali"
 #define VERSION "0.0"
-#define URL "https://github.com/yusuf-a/tf2Skill"
+#define URL "http://git.yusufali.ca/yusuf_ali/karma"
 #define STEAMID 32
 #define QUERY_SIZE 512
 
 Handle db = null
 int reputation_hours = 6
+
+public Plugin myinfo = {name = PLUGIN_NAME,author = AUTHOR,description = "",version = VERSION,url = URL};
 
 public OnPluginStart(){
 	SQL_TConnect( gotDB, "default" )
