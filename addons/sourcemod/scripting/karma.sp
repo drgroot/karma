@@ -87,15 +87,15 @@ public query_getRep( Handle o, Handle h, const char[] e, any data ){
 				CPrintToChat( client, "Your a nobody, you have no rep" )
 			}
 			else if( rep <= GetConVarInt(lowBund) ){
-				CPrintToChatAll( "Fagtard: {green}%s{normal} has {red}%d{normal} rep. What a turd.",
+				CPrintToChatAll( "Fagtard: {green}%s{DEFAULT} has {red}%d{DEFAULT} rep. What a turd.",
 				name, rep )
 			}
 			else if( rep >= GetConVarInt(uppBund) ){
-				CPrintToChatAll( "Player: {green}%s{normal} has {green}%d{normal} rep.",
+				CPrintToChatAll( "Player: {green}%s{DEFAULT} has {green}%d{DEFAULT} rep.",
 				name, rep )
 			}
 			else{
-				CPrintToChat( client, "Your have {GREEN}%d{NORMAL} reputation", rep )	
+				CPrintToChat( client, "Your have {GREEN}%d{DEFAULT} reputation", rep )	
 			}
 		}
 	}
@@ -184,7 +184,7 @@ public query_canRep( Handle o, Handle h, const char[] e, any data ){
 				modReputation( target_id, getSteamID( client ), targetName, getSteamID( target_id ) , reason, minus_rep, 1 )
 			}
 			else{
-				CPrintToChat( client, "{green}You can modify reputation after %d minutes!", lastRep_inMinutes - GetConVarInt(minTime) )
+				CPrintToChat( client, "{green}You can modify reputation after %d minutes!", GetConVarInt(minTime) - lastRep_inMinutes )
 			}
 		}
 	}
@@ -243,19 +243,6 @@ public general_Tquery( Handle o, Handle h, const char[] e, any data ){
 	return
 }
 
-public OnClientPostAdminCheck( client ){
-	if( IsNotClient(client) )
-		return
-
-	char query[QUERY_SIZE]
-	char esc_steamID[STEAMID*2+1]
-
-	SQL_EscapeString( db, getSteamID(client), esc_steamID, sizeof(esc_steamID) )
-	Format( query, sizeof(query),
-	"INSERT IGNORE INTO players (steamID) VALUES('%s')", esc_steamID)
-
-	SQL_TQuery( db, general_Tquery, query, 0 )
-}
 
 char[] getSteamID( client ){
 	char steam_id[STEAMID]
@@ -268,9 +255,4 @@ printTErr( Handle hndle, const char[] error ){
 		return 0
 	}
 	return 1
-}
-bool IsNotClient( client ) {
-	if ( !( 1 <= client <= MaxClients ) || !IsClientInGame(client) || IsFakeClient(client) )
-		return true;
-	return false;
 }
