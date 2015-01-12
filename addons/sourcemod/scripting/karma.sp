@@ -12,13 +12,18 @@
 #define QUERY_SIZE 512
 
 Handle db = null
+int reputation_hours = 6
 
 public OnPluginStart(){
 	SQL_TConnect( gotDB, "default" )
 
-	RegConsoleCmd( "sm_rep", getRep )
+	RegConsoleCmd( "sm_karma", getRep )
+
+	RegConsoleCmd( "sm_rep", giveRep )
 	RegConsoleCmd( "sm_plusrep", giveRep )
-	//RegConsoleCmd( "sm_minusrep", )
+	RegConsoleCmd( "sm_praise", giveRep )
+	RegConsoleCmd( "sm_minusrep", giveRep )
+	RegConsoleCmd( "sm_smite", giveRep )
 
 	if(	LibraryExists( "updater" )	){
 		Updater_AddPlugin(UPDATE_URL)
@@ -87,12 +92,27 @@ public query_getRep( Handle o, Handle h, const char[] e, any data ){
 
 public Action giveRep( client, args ){
 	char steamID[STEAMID]
+	char command[64]
+	char target[64*2+1]
+	char reason[64*2+1]
+	int minus_rep = 1
+
+	GetCmdArg( 0, command, sizeof(command) )
+	GetCmdArg( 1, target, 64 )
+	GetCmdArg( 2, reason, 64 )
 	steamID = getSteamID( client )
+
+	if( strcmp(command, "sm_smite", true) == 1 || strcmp(command, "sm_minusrep", true) == 1  )
+		minus_rep = 1
+
+	/* escape strings */
+	SQL_EscapeString( db, target, target, sizeof(target) )
+	SQL_EscapeString( db, reason, reason, sizeof(reason) )
 
 	char query[QUERY_SIZE]
 	Format( query, sizeof(query), 
-"SELECT TIMESTAMPDIFF(HOUR, lastRep, now() ) FROM players WHERE steamID = '%s'"
-	, steamID)
+	"SELECT TIMESTAMPDIFF(HOUR, lastRep, now() ),%d, '%s','%s' FROM players WHERE steamID = '%s'"
+	, steamID, minus_rep, target, reason )
 
 	SQL_TQuery( db, query_canRep, query, GetClientUserId(client) )
 	
@@ -109,15 +129,47 @@ public query_canRep( Handle o, Handle h, const char[] e, any data ){
 		while( SQL_FetchRow(h) ){
 			int lastRep_inHours = SQL_FetchInt( h, 0 )
 
-			if( lastRep_inHours > 6 ){
-				// can give rep
+			if( lastRep_inHours > reputation_hours ){
+				char target[64]
+				char reason[64]
+				char client_steamID[STEAMID]
+				
+				int minus_rep = SQL_FetchInt( h, 1 )
+				SQL_FetchString( h, 2, target, sizeof(target) )
+				SQL_FetchString( h, 3, reason, sizeof(reason) )
+				client_steamID = getSteamID( client )
+
+				/* determine which client is target */
+				char targetName[MAX_NAME_LENGTH]
+				int target_list[MAXPLAYERS]
+				int target_count
+				bool tn_is_ml
+				target_count = ProcessTargetString( target, client, target_list, MAXPLAYERS, 0, targetName, sizeof(targetName), tn_is_ml )
+				int target_id = target_list[0]
+
+				/* ensure no targeting error */
+				if( target_count != 1 ){
+					ReplyToTargetError( client, target_count )
+					return
+				}
+
+				/* ensure not targeting self */
+				if( target_id == client ){
+					CPrintToChat( client, "{GREEN} You cannot target yourself!" )
+					return
+				}
+				
+
 			}
 			else{
-				CPrintToChat( client, "{green} You can give rep once every 6 hours!" )
+				CPrintToChat( client, "{green} You can modify reputation after %d hours!", reputation_hours - lastRep_inHours )
 			}
 		}
 	}
 }
+
+
+
 
 
 char[] getSteamID( client ){
