@@ -4,7 +4,7 @@
 #include <morecolors>
 
 #define UPDATE_URL "http://dev.yusufali.ca/plugins/karma/master/"
-#define PLUGIN_NAME "PlayTF2 Karma System"
+#define PLUGIN_NAME "Karma System REDUX"
 #define AUTHOR "Yusuf Ali"
 #define VERSION "0.0"
 #define URL "https://github.com/yusuf-a/tf2Skill"
