@@ -57,7 +57,7 @@ public Action getRep( client, args ){
 
 	char query[QUERY_SIZE]
 	Format( query, sizeof(query), 
-		"SELECT sum(rep) FROM reputation_log WHERE steamID = '%s'", steamID)
+		"SELECT sum(rep) FROM players_reputation WHERE steamID = '%s'", steamID)
 
 	SQL_TQuery( db, query_getRep, query, GetClientUserId(client) )
 
@@ -99,12 +99,21 @@ public Action giveRep( client, args ){
 	char reason[64*2+1]
 	int minus_rep = 1
 
+	/* ensure correct syntax is being used */
+	if( GetCmdArgs() == 1 && strcmp(command,"sm_rep") == 0){
+		getRep( client, args )
+	}
+	if( GetCmdArgs() < 3 ){
+		CPrintToChat( client, "Usage: %s <target> \"<reason>\"", command )
+		return Plugin_Handled
+	}
+
 	GetCmdArg( 0, command, sizeof(command) )
 	GetCmdArg( 1, target, 64 )
 	GetCmdArg( 2, reason, 64 )
 	steamID = getSteamID( client )
 
-	if( strcmp(command, "sm_smite", true) == 1 || strcmp(command, "sm_minusrep", true) == 1  )
+	if( strcmp(command, "sm_smite") == 0 || strcmp(command, "sm_minusrep") == 0  )
 		minus_rep = -1
 
 	/* escape strings */
@@ -173,8 +182,6 @@ public query_canRep( Handle o, Handle h, const char[] e, any data ){
 	}
 }
 
-
-
 modReputation( 
 	int client
 	, const char[] clientstID
@@ -197,7 +204,7 @@ modReputation(
 	/* insert into reputation log */
 	char query[QUERY_SIZE]
 	Format( query, sizeof(query), 
-	"INSERT INTO reputation_log (rep, steamID, reason, from) VALUES ( %d, '%s', '%s', '%s')"
+	"INSERT INTO players_reputation (rep, steamID, reason, from) VALUES ( %d, '%s', '%s', '%s')"
 	, amount_change, esc_targetstID, esc_reason, esc_clientstID  )
 
 	SQL_TQuery( db, general_Tquery, query, 0 )
@@ -228,6 +235,20 @@ public general_Tquery( Handle o, Handle h, const char[] e, any data ){
 	return
 }
 
+public OnClientPostAdminCheck( client ){
+	if( IsNotClient(client) )
+		return
+
+	char query[QUERY_SIZE]
+	char esc_steamID[STEAMID*2+1]
+
+	SQL_EscapeString( db, getSteamID(client), esc_steamID, sizeof(esc_steamID) )
+	Format( query, sizeof(query),
+	"INSERT IGNORE INTO players (steamID) VALUES('%s')", esc_steamID)
+
+	SQL_TQuery( db, general_Tquery, query, 0 )
+}
+
 char[] getSteamID( client ){
 	char steam_id[STEAMID]
 	GetClientAuthId( client, AuthIdType:AuthId_Steam3, steam_id, STEAMID )
@@ -239,4 +260,9 @@ printTErr( Handle hndle, const char[] error ){
 		return 0
 	}
 	return 1
+}
+bool IsNotClient( client ) {
+	if ( !( 1 <= client <= MaxClients ) || !IsClientInGame(client) || IsFakeClient(client) )
+		return true;
+	return false;
 }
