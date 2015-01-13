@@ -38,7 +38,7 @@ public Plugin myinfo = {name = PLUGIN_NAME,author = AUTHOR,description = "",vers
 public OnPluginStart(){
 	SQL_TConnect( gotDB, "default" )
 
-	CreateConVar( "sm_karma_version", VERSION, "", FCVAR_NOTIFY|FCVAR_PLUGIN|FCVAR_REPLICATED )
+	CreateConVar( "sm_karma_redux_version", VERSION, "", FCVAR_NOTIFY|FCVAR_PLUGIN|FCVAR_REPLICATED )
 	minTime = CreateConVar( "sm_karma_minTime", "90", "Cool down time to give/remove fame", FCVAR_NOTIFY )
 	uppBund = CreateConVar( "sm_karma_upp", "25", "Required upper bound to display fame globally" )
 	lowBund = CreateConVar( "sm_karma_low","-10", "Required lower bound to display fame globally" )
