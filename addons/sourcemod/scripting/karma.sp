@@ -43,6 +43,8 @@ public OnPluginStart(){
 	uppBund = CreateConVar( "sm_karma_upp", "25", "Required upper bound to display fame globally" )
 	lowBund = CreateConVar( "sm_karma_low","-10", "Required lower bound to display fame globally" )
 
+	HookEvent("player_disconnect", Event_discon, EventHookMode_Post )
+
 	RegConsoleCmd( "sm_karma", getRep )
 	RegConsoleCmd( "sm_rep", giveRep )
 	RegConsoleCmd( "sm_plusrep", giveRep )
@@ -61,6 +63,34 @@ public OnPluginStart(){
 #include "karma_canRep.sp"
 #include "karma_modRep.sp"
 #include "karma_stock.sp"
+
+/* 
+	hook for disconnect event
+*/
+public Action Event_discon( Handle event, const char[] name, bool dB ){
+	char reason[STEAMID]
+	GetEventString( event, "reason", reason, sizeof(reason) )
+
+	/* ensure it was a kick */
+	if( strcmp(reason,"kick") != 0 )
+		return Plugin_Continue
+
+	char steamID[STEAMID]
+	char p_name[MAX_NAME_LENGTH]
+
+	GetEventString( event, "name", p_name, sizeof(p_name) )
+	GetEventString( event, "networkid", steamID, sizeof(steamID) )
+	modReputation(
+		0
+		, "console"
+		, p_name
+		, steamID
+		, "kicked"
+		, -1
+		, 0)
+
+	return Plugin_Continue
+}
 
 /* 
 	forwards for reducing rep upon ban
