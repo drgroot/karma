@@ -61,3 +61,63 @@ public OnPluginStart(){
 #include "karma_canRep.sp"
 #include "karma_modRep.sp"
 #include "karma_stock.sp"
+
+/* 
+	forwards for reducing rep upon ban
+*/
+public Action OnBanClient( client, time, fgs, const char[] r
+	, const char[] m, const char[] c, any admin ){
+
+	char ban_nme[MAX_NAME_LENGTH]
+	GetClientName( client, ban_nme, MAX_NAME_LENGTH )
+	modReputation( 
+		client
+		, getSteamID(admin)
+		, ban_nme
+		, getSteamID(client)
+		, r
+		, -1
+		, 0 )
+
+	return Plugin_Continue
+}
+
+/* 
+	forwards for when muted/gaged
+*/
+public Action BaseComm_OnClientMute( client, bool muteState ){
+	if( !muteState )
+		return Plugin_Continue
+
+	char client_name[MAX_NAME_LENGTH]
+	GetClientName( client, client_name, MAX_NAME_LENGTH )
+	modReputation(
+		client
+		, "console"
+		, client_name
+		, getSteamID(client)
+		, "muted"
+		, -1
+		, 0
+	)
+
+	return Plugin_Continue
+}
+public Action BaseComm_OnClientGag( client, bool gagState ){
+	if( !gagState )
+		return Plugin_Continue
+
+	char client_name[MAX_NAME_LENGTH]
+	GetClientName( client, client_name, MAX_NAME_LENGTH )
+	modReputation(
+		client
+		, "console"
+		, client_name
+		, getSteamID(client)
+		, "gagged"
+		, -1
+		, 0
+	)
+
+	return Plugin_Continue
+}
