@@ -1,12 +1,8 @@
-# Karma
+# Karma System Redux
 
-A karma system for source servers
-[Model System](https://maplewiki.net/index.php?title=Fame)
+A system to quantify players' popularity within your server!
+
+## [Manual][1]
 
 
-## Todo
-
-- still not complete, much code to write
-- convars for everything, change from hours to minutes
-- change fame for players global
-- check if changing same player
+[1]: http://git.yusufali.ca/yusuf_ali/karma/wikis/home

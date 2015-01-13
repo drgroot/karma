@@ -36,7 +36,7 @@ Handle lowBund = null
 public Plugin myinfo = {name = PLUGIN_NAME,author = AUTHOR,description = "",version = VERSION,url = URL};
 
 public OnPluginStart(){
-	SQL_TConnect( gotDB, "default" )
+	SQL_TConnect( gotDB, "karma_redux" )
 
 	CreateConVar( "sm_karma_redux_version", VERSION, "", FCVAR_NOTIFY|FCVAR_PLUGIN|FCVAR_REPLICATED )
 	minTime = CreateConVar( "sm_karma_minTime", "90", "Cool down time to give/remove fame", FCVAR_NOTIFY )
