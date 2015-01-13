@@ -32,6 +32,9 @@ Handle db = null
 Handle minTime = null
 Handle uppBund = null
 Handle lowBund = null
+Handle sm_ban = null
+Handle sm_kick = null
+Handle sm_mute = null
 
 public Plugin myinfo = {name = PLUGIN_NAME,author = AUTHOR,description = "",version = VERSION,url = URL};
 
@@ -42,6 +45,10 @@ public OnPluginStart(){
 	minTime = CreateConVar( "sm_karma_minTime", "90", "Cool down time to give/remove fame", FCVAR_NOTIFY )
 	uppBund = CreateConVar( "sm_karma_upp", "25", "Required upper bound to display fame globally" )
 	lowBund = CreateConVar( "sm_karma_low","-10", "Required lower bound to display fame globally" )
+
+	sm_ban = CreateConVar( "sm_karma_ban", "-1", "Amount to defame for being banned" )
+	sm_kick = CreateConVar("sm_karma_kick","-1", "Amount to defame for being kicked" )
+	sm_mute = CreateConVar("sm_karma_mute","-1", "Amount to defame for being muted" )
 
 	HookEvent("player_disconnect", Event_discon, EventHookMode_Post )
 
@@ -86,7 +93,7 @@ public Action Event_discon( Handle event, const char[] name, bool dB ){
 		, p_name
 		, steamID
 		, "kicked"
-		, -1
+		, GetConVarInt( sm_kick )
 		, 0)
 
 	return Plugin_Continue
@@ -106,7 +113,7 @@ public Action OnBanClient( client, time, fgs, const char[] r
 		, ban_nme
 		, getSteamID(client)
 		, r
-		, -1
+		, GetConVarInt( sm_ban )
 		, 0 )
 
 	return Plugin_Continue
@@ -127,7 +134,7 @@ public Action BaseComm_OnClientMute( client, bool muteState ){
 		, client_name
 		, getSteamID(client)
 		, "muted"
-		, -1
+		, GetConVarInt( sm_mute )
 		, 0
 	)
 
@@ -145,7 +152,7 @@ public Action BaseComm_OnClientGag( client, bool gagState ){
 		, client_name
 		, getSteamID(client)
 		, "gagged"
-		, -1
+		, GetConVarInt( sm_mute )
 		, 0
 	)
 
