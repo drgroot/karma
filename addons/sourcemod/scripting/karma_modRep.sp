@@ -54,19 +54,25 @@ modReputation(
 		"UPDATE players SET lastRep = now() WHERE steamID = '%s'"
 		, clientstID )
 		SQL_TQuery( db, general_Tquery, query, 0 )
+	}
 
-		/* Notify client of change */
-		if( amount_change > 0 ){
-			CPrintToChat( client, "Your rep has increased by {GREEN}%d{DEFAULT} reason: {ORANGE}%s"
-				, amount_change, reason)
+	/* Notify client of change */
+	if( amount_change > 0 ){
+		if( isSource_2013 ){
+			CPrintToChatAll( "%s's rep has increased by {GREEN}%d{DEFAULT}. reason: {ORANGE}%s"
+					, targetName , amount_change, reason)
 		}
 		else{
-			CPrintToChat( client, "Your rep has decreased by {RED}%d{DEFAULT} reason: {ORANGE}%s"
-				, amount_change, reason )
+			PrintToChatAll( "%s's rep has increased by %d. reason: %s", targetName, amount_change, reason )
 		}
 	}
 	else{
-		CPrintToChatAll("Player: %s has had their rep change by {GREEN}%d{DEFAULT} reason: {ORANGE}%s "
-			, targetName, amount_change, reason )
+		if( isSource_2013 ){
+			CPrintToChatAll( "%s's rep has decreased by {RED}%d{DEFAULT}. reason: {ORANGE}%s"
+					, targetName, -1*amount_change, reason )
+		}
+		else{
+			PrintToChatAll( "%s's rep has decreased by %s. reason: %s", targetName, -1*amount_change, reason )
+		}
 	}
 }

@@ -50,18 +50,33 @@ public query_getRep( Handle o, Handle h, const char[] e, any data ){
 			GetClientName( client, name, sizeof(name) )
 
 			if( rep == 0){
-				CPrintToChat( client, "Your a nobody, you have no rep" )
+				PrintToChat( client, "Your a nobody, you have no rep" )
 			}
 			else if( rep <= GetConVarInt(lowBund) ){
-				CPrintToChatAll( "Fagtard: {green}%s{DEFAULT} has {red}%d{DEFAULT} rep. What a turd.",
-				name, rep )
+				if( isSource_2013 ){
+					CPrintToChatAll( "Fagtard: {green}%s{DEFAULT} has {red}%d{DEFAULT} rep. What a turd.",
+					name, rep )
+				}
+				else{
+					PrintToChatAll( "Fagtard: %s has %d rep. What a turd.", name, rep )
+				}
 			}
 			else if( rep >= GetConVarInt(uppBund) ){
-				CPrintToChatAll( "Player: {green}%s{DEFAULT} has {green}%d{DEFAULT} rep.",
-				name, rep )
+				if( isSource_2013 ){
+					CPrintToChatAll( "Player: {green}%s{DEFAULT} has {green}%d{DEFAULT} rep.",
+					name, rep )
+				}
+				else{
+					PrintToChatAll( "Player: %s has %d rep.", name, rep )
+				}
 			}
 			else{
-				CPrintToChat( client, "Your have {GREEN}%d{DEFAULT} reputation", rep )	
+				if( isSource_2013 ){
+					CPrintToChat( client, "Your have {GREEN}%d{DEFAULT} reputation", rep )	
+				}
+				else{
+					PrintToChat( client, "You have %d reputation", rep )
+				}
 			}
 		}
 	}

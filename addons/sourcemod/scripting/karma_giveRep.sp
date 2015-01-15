@@ -41,7 +41,7 @@ public Action giveRep( client, args ){
 	else{
 
 		if( GetCmdArgs() != 2 ){
-			CPrintToChat( client, "Usage: %s <target> \"<reason>\"", command )
+			PrintToChat( client, "Usage: %s <target> \"<reason>\"", command )
 			return Plugin_Handled
 		}
 

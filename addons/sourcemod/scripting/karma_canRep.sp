@@ -58,14 +58,24 @@ public query_canRep( Handle o, Handle h, const char[] e, any data ){
 
 				/* ensure not targeting self */
 				if( target_id == client ){
-					CPrintToChat( client, "{GREEN}You cannot target yourself!" )
+					if( isSource_2013 ){
+						CPrintToChat( client, "{GREEN}You cannot target yourself!" )
+					}
+					else{
+						PrintToChat( client, "You cannot target yourself!")
+					}
 					return
 				}
 
 				modReputation( target_id, getSteamID( client ), targetName, getSteamID( target_id ) , reason, minus_rep, 1 )
 			}
 			else{
-				CPrintToChat( client, "{green}You can modify reputation after %d minutes!", GetConVarInt(minTime) - lastRep_inMinutes )
+				if( isSource_2013 ){
+					CPrintToChat( client, "{green}You can rep after %d minutes!", GetConVarInt(minTime) - lastRep_inMinutes )
+				}
+				else{
+					PrintToChat( client, "You can rep after %d minutes! ", GetConVarInt(minTime) - lastRep_inMinutes )
+				}
 			}
 		}
 	}

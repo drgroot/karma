@@ -36,6 +36,8 @@ Handle sm_ban = null
 Handle sm_kick = null
 Handle sm_mute = null
 
+bool isSource_2013 = true
+
 public Plugin myinfo = {name = PLUGIN_NAME,author = AUTHOR,description = "",version = VERSION,url = URL};
 
 public OnPluginStart(){
@@ -59,16 +61,27 @@ public OnPluginStart(){
 	RegConsoleCmd( "sm_minusrep", giveRep )
 	RegConsoleCmd( "sm_smite", giveRep )
 
+	/* determine if source 2014 or higher */
+	isSource_2013 = ( GetEngineVersion() != Engine_CSGO )
+
 	if(	LibraryExists( "updater" )	){
 		Updater_AddPlugin(UPDATE_URL)
 	}
 }
 
-
+/* when a player sends a request to get their reputation */
 #include "karma_getRep.sp"
+
+/* triggered when player says !smite etc rep */
 #include "karma_giveRep.sp"
+
+/* determine if player can give rep */
 #include "karma_canRep.sp"
+
+/* master function to modify reputation */
 #include "karma_modRep.sp"
+
+/* stock functions */
 #include "karma_stock.sp"
 
 /* 
