@@ -19,6 +19,7 @@ along with Karma Redux.  If not, see <http://www.gnu.org/licenses/>.
 #include <dbi>
 #include <updater>
 #include <morecolors>
+#include <karma>
 
 #define UPDATE_URL "http://dev.yusufali.ca/plugins/karma/master/"
 #define PLUGIN_NAME "Karma System REDUX"
@@ -35,6 +36,7 @@ Handle lowBund = null
 Handle sm_ban = null
 Handle sm_kick = null
 Handle sm_mute = null
+Handle g_player_karma = null
 
 bool isSource_2013 = true
 
@@ -61,12 +63,18 @@ public OnPluginStart(){
 	RegConsoleCmd( "sm_minusrep", giveRep )
 	RegConsoleCmd( "sm_smite", giveRep )
 
+	g_player_karma = CreateForward( ET_Event, Param_Cell, Param_Cell )
+
 	/* determine if source 2014 or higher */
 	isSource_2013 = ( GetEngineVersion() != Engine_CSGO )
 
 	if(	LibraryExists( "updater" )	){
 		Updater_AddPlugin(UPDATE_URL)
 	}
+}
+public APLRes AskPluginLoad2( Handle me, bool late, char[] err, err_max ){
+	CreateNative( "karma_redux_getKarma", native_get_karma )
+	return APLRes_Success
 }
 
 /* when a player sends a request to get their reputation */
@@ -83,6 +91,9 @@ public OnPluginStart(){
 
 /* stock functions */
 #include "karma_stock.sp"
+
+/* natives */
+#include "karma_natives.sp"
 
 /* 
 	hook for disconnect event
