@@ -23,8 +23,8 @@ reputation ones it has been verfied
 */ 
 
 modReputation( 
-	int client 					// target's clientID
-	, const char[] clientstID 	// client's steamID
+	//int client 					// target's clientID
+	 const char[] clientstID 	// client's steamID
 	, const char[] targetName 	// target's name
 	, const char[] targetstID 	// target's steamID
 	, const char[] reason 		// reason for modification

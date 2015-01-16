@@ -101,8 +101,8 @@ public Action Event_discon( Handle event, const char[] name, bool dB ){
 	GetEventString( event, "name", p_name, sizeof(p_name) )
 	GetEventString( event, "networkid", steamID, sizeof(steamID) )
 	modReputation(
-		0
-		, "console"
+		//0
+		 "console"
 		, p_name
 		, steamID
 		, "kicked"
@@ -121,8 +121,8 @@ public Action OnBanClient( client, time, fgs, const char[] r
 	char ban_nme[MAX_NAME_LENGTH]
 	GetClientName( client, ban_nme, MAX_NAME_LENGTH )
 	modReputation( 
-		client
-		, getSteamID(admin)
+		//client
+		 getSteamID(admin)
 		, ban_nme
 		, getSteamID(client)
 		, r
@@ -142,8 +142,8 @@ public Action BaseComm_OnClientMute( client, bool muteState ){
 	char client_name[MAX_NAME_LENGTH]
 	GetClientName( client, client_name, MAX_NAME_LENGTH )
 	modReputation(
-		client
-		, "console"
+		//client
+		 "console"
 		, client_name
 		, getSteamID(client)
 		, "muted"
@@ -160,8 +160,8 @@ public Action BaseComm_OnClientGag( client, bool gagState ){
 	char client_name[MAX_NAME_LENGTH]
 	GetClientName( client, client_name, MAX_NAME_LENGTH )
 	modReputation(
-		client
-		, "console"
+		//client
+		 "console"
 		, client_name
 		, getSteamID(client)
 		, "gagged"

@@ -34,6 +34,13 @@ char[] getSteamID( client ){
 	return steam_id
 }
 
+char[] esc_getSteamID( client, bool validate=true ){
+	char steam_id[STEAMID*2+1]
+	GetClientAuthId( client, AuthIdType:AuthId_Steam3 , steam_id, STEAMID, validate )
+	SQL_EscapeString( db, steam_id, steam_id, sizeof(steam_id)  )
+	return steam_id
+}
+
 printTErr( Handle hndle, const char[] error ){
 	if( hndle == null ){
 		LogError( "Karma - Query Failed: %s", error )

@@ -67,7 +67,7 @@ public query_canRep( Handle o, Handle h, const char[] e, any data ){
 					return
 				}
 
-				modReputation( target_id, getSteamID( client ), targetName, getSteamID( target_id ) , reason, minus_rep, 1 )
+				modReputation( getSteamID( client ), targetName, getSteamID( target_id ) , reason, minus_rep, 1 )
 			}
 			else{
 				if( isSource_2013 ){
