@@ -35,7 +35,7 @@ public query_canRep( Handle o, Handle h, const char[] e, any data ){
 			int lastRep_inMinutes = SQL_FetchInt( h, 0 )
 			
 			if( lastRep_inMinutes > GetConVarInt(minTime) ){
-				char target[64]
+				char target[MAX_NAME_LENGTH]
 				char reason[64]
 				
 				int minus_rep = SQL_FetchInt( h, 1 )

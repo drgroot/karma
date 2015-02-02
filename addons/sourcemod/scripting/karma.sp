@@ -29,9 +29,12 @@ along with Karma Redux.  If not, see <http://www.gnu.org/licenses/>.
 #define QUERY_SIZE 512
 
 Handle db = null
+
+Handle minTime_repeat = null
 Handle minTime = null
 Handle uppBund = null
 Handle lowBund = null
+
 Handle sm_ban = null
 Handle sm_kick = null
 Handle sm_mute = null
@@ -44,7 +47,9 @@ public OnPluginStart(){
 	SQL_TConnect( gotDB, "karma_redux" )
 
 	CreateConVar( "sm_karma_redux_version", VERSION, "", FCVAR_NOTIFY|FCVAR_PLUGIN|FCVAR_REPLICATED )
-	minTime = CreateConVar( "sm_karma_minTime", "90", "Cool down time to give/remove fame", FCVAR_NOTIFY )
+
+	minTime_repeat = CreateConVar( "sm_karma_repeatTime", "300", "Cool down time (minutes) to give/remove fame to the same person", FCVAR_NOTIFY )
+	minTime = CreateConVar( "sm_karma_minTime", "90", "Cool down time (minutes) to give/remove fame", FCVAR_NOTIFY )
 	uppBund = CreateConVar( "sm_karma_upp", "25", "Required upper bound to display fame globally" )
 	lowBund = CreateConVar( "sm_karma_low","-10", "Required lower bound to display fame globally" )
 

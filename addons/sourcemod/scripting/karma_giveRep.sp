@@ -25,12 +25,12 @@ modify rep or karma
 
 public Action giveRep( client, args ){
 	char command[64]
-	char target[64*2+1]
+	char target[MAX_NAME_LENGTH*2+1]
 	char reason[64*2+1]
 	int minus_rep = 1
 
 	GetCmdArg( 0, command, sizeof(command) )
-	GetCmdArg( 1, target, 64 )
+	GetCmdArg( 1, target, MAX_NAME_LENGTH )
 	GetCmdArg( 2, reason, 64 )
 
 	/* ensure correct syntax is being used */
