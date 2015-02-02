@@ -51,13 +51,13 @@ public query_canRep( Handle o, Handle h, const char[] e, any data ){
 			
 			if( lastRep_inMinutes >= GetConVarInt(minTime) ){
 				
-				minus_rep = SQL_FetchInt( h, 1 )
-				SQL_FetchString( h, 2, target, sizeof(target) )
-				SQL_FetchString( h, 3, reason, sizeof(reason) )
-				SQL_FetchString( h, 5, query_steamID, sizeof(query_steamID) )
-
-				/* determine which client is target */
 				if(! processed_target ){
+					
+					minus_rep = SQL_FetchInt( h, 1 )
+					SQL_FetchString( h, 2, target, sizeof(target) )
+					SQL_FetchString( h, 3, reason, sizeof(reason) )
+
+					/* determine which client is target */
 					int target_list[MAXPLAYERS]
 					int target_count
 					bool tn_is_ml
@@ -84,10 +84,13 @@ public query_canRep( Handle o, Handle h, const char[] e, any data ){
 					processed_target = true
 				}
 
+				SQL_FetchString( h, 5, query_steamID, sizeof(query_steamID) )
+
 				/* determine if repped same player before */
 				if( strcmp(target_steamID, query_steamID) == 0 ){
 					repped_player = true
 					last_rep_query = SQL_FetchInt( h, 4 )
+					break
 				}
 			}
 			else{
