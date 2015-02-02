@@ -48,7 +48,7 @@ public OnPluginStart(){
 
 	CreateConVar( "sm_karma_redux_version", VERSION, "", FCVAR_NOTIFY|FCVAR_PLUGIN|FCVAR_REPLICATED )
 
-	minTime_repeat = CreateConVar( "sm_karma_repeatTime", "300", "Cool down time (minutes) to give/remove fame to the same person", FCVAR_NOTIFY )
+	minTime_repeat = CreateConVar( "sm_karma_repeatTime", "10080", "Cool down time (minutes) to give/remove fame to the same person", FCVAR_NOTIFY )
 	minTime = CreateConVar( "sm_karma_minTime", "90", "Cool down time (minutes) to give/remove fame", FCVAR_NOTIFY )
 	uppBund = CreateConVar( "sm_karma_upp", "25", "Required upper bound to display fame globally" )
 	lowBund = CreateConVar( "sm_karma_low","-10", "Required lower bound to display fame globally" )
