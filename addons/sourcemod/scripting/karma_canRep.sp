@@ -24,6 +24,21 @@ if a player can modify reputation
 
 public query_canRep( Handle o, Handle h, const char[] e, any data ){
 	int client = GetClientOfUserId( data )
+	
+	bool processed_target = false
+	bool repped_player = false
+
+	char query_steamID[STEAMID]
+	int last_rep_query
+	
+	char target[MAX_NAME_LENGTH]
+	char targetName[MAX_NAME_LENGTH]
+	char target_steamID[STEAMID]
+	char reason[64]
+	
+	int minus_rep
+	int target_id
+	
 
 	if( !IsClientInGame(client) )
 		return
@@ -34,40 +49,46 @@ public query_canRep( Handle o, Handle h, const char[] e, any data ){
 
 			int lastRep_inMinutes = SQL_FetchInt( h, 0 )
 			
-			if( lastRep_inMinutes > GetConVarInt(minTime) ){
-				char target[MAX_NAME_LENGTH]
-				char reason[64]
+			if( lastRep_inMinutes >= GetConVarInt(minTime) ){
 				
-				int minus_rep = SQL_FetchInt( h, 1 )
+				minus_rep = SQL_FetchInt( h, 1 )
 				SQL_FetchString( h, 2, target, sizeof(target) )
 				SQL_FetchString( h, 3, reason, sizeof(reason) )
+				SQL_FetchString( h, 5, query_steamID, sizeof(query_steamID) )
 
 				/* determine which client is target */
-				char targetName[MAX_NAME_LENGTH]
-				int target_list[MAXPLAYERS]
-				int target_count
-				bool tn_is_ml
-				target_count = ProcessTargetString( target, 0, target_list, MAXPLAYERS, 0, targetName, sizeof(targetName), tn_is_ml )
-				int target_id = target_list[0]
+				if(! processed_target ){
+					int target_list[MAXPLAYERS]
+					int target_count
+					bool tn_is_ml
+					target_count = ProcessTargetString( target, 0, target_list, MAXPLAYERS, 0, targetName, sizeof(targetName), tn_is_ml )
+					target_id = target_list[0]
+					target_steamID = getSteamID( target_id )
 
-				/* ensure no targeting error */
-				if( target_count != 1 ){
-					ReplyToTargetError( client, target_count )
-					return
+					/* ensure no targeting error */
+					if( target_count != 1 ){
+						ReplyToTargetError( client, target_count )
+						return
+					}
+
+					/* ensure not targeting self */
+					if( target_id == client ){
+						if( isSource_2013 ){
+							CPrintToChat( client, "{GREEN}You cannot target yourself!" )
+						}
+						else{
+							PrintToChat( client, "You cannot target yourself!")
+						}
+						return
+					}
+					processed_target = true
 				}
 
-				/* ensure not targeting self */
-				if( target_id == client ){
-					if( isSource_2013 ){
-						CPrintToChat( client, "{GREEN}You cannot target yourself!" )
-					}
-					else{
-						PrintToChat( client, "You cannot target yourself!")
-					}
-					return
+				/* determine if repped same player before */
+				if( strcmp(target_steamID, query_steamID) == 0 ){
+					repped_player = true
+					last_rep_query = SQL_FetchInt( h, 4 )
 				}
-
-				modReputation( getSteamID( client ), targetName, getSteamID( target_id ) , reason, minus_rep, 1 )
 			}
 			else{
 				if( isSource_2013 ){
@@ -76,7 +97,24 @@ public query_canRep( Handle o, Handle h, const char[] e, any data ){
 				else{
 					PrintToChat( client, "You can rep after %d minutes! ", GetConVarInt(minTime) - lastRep_inMinutes )
 				}
+
+				return
 			}
 		}
+
+		if( repped_player ){
+			/* ensure cool down time has passed */
+			if( last_rep_query < GetConVarInt(minTime_repeat) ){
+				if( isSource_2013 ){
+					CPrintToChat( client, "{green}You can rep after %d minutes!", GetConVarInt(minTime_repeat) - last_rep_query )
+				}
+				else{
+					PrintToChat( client, "You can rep after %d minutes! ", GetConVarInt(minTime_repeat) - last_rep_query )
+				}
+				return
+			}
+		}
+		
+		modReputation( getSteamID( client ), targetName, getSteamID( target_id ) , reason, minus_rep, 1 )
 	}
 }

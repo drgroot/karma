@@ -54,7 +54,7 @@ public Action giveRep( client, args ){
 
 		char query[QUERY_SIZE]
 		Format( query, sizeof(query), 
-		"SELECT TIMESTAMPDIFF(MINUTE, lastRep, now() ),%d, '%s','%s' FROM players WHERE steamID = '%s'"
+		"SELECT TIMESTAMPDIFF(MINUTE, a.lastRep, now() ),%d, '%s','%s', TIMESTAMPDIFF(minute,b.rep_date,now()), b.steamID FROM players a LEFT JOIN players_reputation b ON a.`steamID`=b.`steamID` WHERE a.steamID = '%s'"
 		, minus_rep, target, reason, getSteamID( client ) )
 		
 		SQL_TQuery( db, query_canRep, query, GetClientUserId(client) )
